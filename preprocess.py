@@ -1,6 +1,6 @@
 import numpy as np
 from PIL import Image
-from keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
+from keras.applications.vgg16 import preprocess_input
 from keras.preprocessing import image
 import glob
 import os
@@ -12,20 +12,33 @@ def binarylab(labels,nb_class,size):
             y[i, j,labels[i][j]] = 1
     return y
 
+def load_img_array(fname, target_size=None, dim_ordering='default'):
+    """Loads and image file and returns an array."""
+    img = Image.open(fname)
+    img = img.resize(target_size)
+    img.load()
+    x = image.img_to_array(img, dim_ordering=dim_ordering)
+    img.close()
+    return x
+
 def load_image(path, size):
     img = Image.open(path)
     img = img.resize((size, size))
-    X = image.img_to_array(img)
+    img.load()
+    X = np.array(img)
+    img.close()
+
+    #centralize
+    pascal_mean = np.array([102.93, 111.36, 116.52])
+    X = X - pascal_mean
     X = np.expand_dims(X, axis=0)
-    X = preprocess_input(X)
     return X
 
 def load_label(path, size, nb_class):
-    label = Image.open(path)
-    label = label.resize((size, size))
-    y = np.array(label, dtype=np.int32)
-    mask = y == 255
-    y[mask] = 0
+    y = load_img_array(path,target_size=[224,224])
+    y = np.reshape(y,[224,224])
+    mask = y==255
+    y[mask]=0
     y = binarylab(y, nb_class, size)  # 21 classes
     y = np.expand_dims(y, axis=0)
     return y

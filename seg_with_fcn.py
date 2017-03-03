@@ -2,6 +2,7 @@ from keras.layers import Convolution2D, MaxPooling2D,Input,Activation,UpSampling
 from keras.models import Model
 from preprocess import *
 from keras.optimizers import Adam
+from save_segment import *
 
 def build_segmentor(img_h=224,img_w=224):
     FCN_CLASSES = 21
@@ -73,6 +74,4 @@ if __name__ == '__main__':
     print pred.shape
     print pred[0].shape
     for i in range(pred.shape[0]):
-        result = pred[i].argmax(axis=-1).astype(np.int32)
-        img = Image.fromarray(result)
-        img.save("out.png")
+        save_seg(pred[i],"out{}".format(i))
