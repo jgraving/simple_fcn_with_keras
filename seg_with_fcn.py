@@ -65,10 +65,9 @@ if __name__ == '__main__':
     print y_train.shape
     print y_test.shape
 
-    opt = Adam
     segmentor = build_segmentor()
-    segmentor.compile(optimizer=opt,loss='categorical_crossentropy',metrics=['accuracy'])
-    segmentor.fit(X_train,y_train,batch_size=32,nb_epoch=50,verbose=1,validation_data=(X_test,y_test),shuffle=True)
+    segmentor.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
+    segmentor.fit(X_train,y_train,batch_size=32,nb_epoch=5,verbose=1,validation_data=(X_test,y_test),shuffle=True)
 
     pred = segmentor.predict(X_test)
     print pred.shape

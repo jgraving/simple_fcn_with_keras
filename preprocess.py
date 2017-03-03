@@ -9,7 +9,7 @@ def binarylab(labels,nb_class,size):
     y = np.zeros((size, size,nb_class))
     for i in range(size):
         for j in range(size):
-            y[i, j,labels[i][j]] = 1
+            y[i, j,int(labels[i][j])] = 1
     return y
 
 def load_img_array(fname, target_size=None, dim_ordering='default'):
@@ -51,7 +51,7 @@ def load_dataset(nb_iamges=100,bk_point=80):
 
     images = np.zeros((1, size, size,3))
     labels = np.zeros((1, size, size,nb_class))
-    images_path = "./VOCdevkit/VOC2012/JPEGImages/"
+    images_path = "../VOCdevkit/VOC2012/JPEGImages/"
     for file in glob.glob(images_path + "*.jpg"):
         X = load_image(file, size)
         path_y = file.replace("JPEGImages", "SegmentationClass").replace("jpg", "png")
